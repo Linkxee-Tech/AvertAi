@@ -1,0 +1,62 @@
+{
+  "en": {
+    "app_title": "AvertAI",
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "alerts": "Alerts",
+    "feedback": "Feedback",
+    "resources": "Resources",
+    "settings": "Settings",
+    "offline_mode": "Offline Mode",
+    "sos_button": "SOS",
+    "alert_green": "Ideal planting window. Apply nitrogen fertilizer today.",
+    "alert_yellow": "Sandbag low-lying areas. Move poultry indoors in 24hrs.",
+    "alert_red": "Relocate cattle to Zone B immediately. Water reserves will deplete."
+  },
+  "sw": {
+    "app_title": "AvertAI",
+    "login": "Ingia",
+    "logout": "Toka",
+    "dashboard": "Dashibodi",
+    "alerts": "Arifa",
+    "feedback": "Maoni",
+    "resources": "Rasilimali",
+    "settings": "Mipangilio",
+    "offline_mode": "Hali ya Nje ya Mtandao",
+    "sos_button": "SOS",
+    "alert_green": "Wakati mzuri wa kupanda. Weka mbolea ya naitrojeni leo.",
+    "alert_yellow": "Weka mifuko ya mchanga maeneo ya chini. Hamishia kuku ndani ya masaa 24.",
+    "alert_red": "Hamishia ng'ombe eneo B mara moja. Akiba ya maji itaisha."
+  },
+  "am": {
+    "app_title": "AvertAI",
+    "login": "ግባ",
+    "logout": "ውጣ",
+    "dashboard": "ዳሽቦርድ",
+    "alerts": "ማንቂያዎች",
+    "feedback": "ግብረመልስ",
+    "resources": "ግብዓቶች",
+    "settings": "ቅንብሮች",
+    "offline_mode": "ከመስመር ውጭ ሁነታ",
+    "sos_button": "ኤስ.ኦ.ኤስ (SOS)",
+    "alert_green": "ተስማሚ የመትከያ ወቅት ነው። ዛሬ የናይትሮጅን ማዳበሪያ ይጨምሩ።",
+    "alert_yellow": "ዝቅተኛ ቦታዎችን በአሸዋ ከረጢት ይሸፍኑ። የዶሮ እርባታን በ24 ሰዓት ውስጥ ወደ ውስጥ ያንቀሳቅሱ።",
+    "alert_red": "ከብቶችን ወደ ዞን ቢ ወዲያውኑ ያንቀሳቅሱ። የውሃ ክምችት ያልቃል።"
+  },
+  "so": {
+    "app_title": "AvertAI",
+    "login": "Gal",
+    "logout": "Bax",
+    "dashboard": "Guddi",
+    "alerts": "Digniinaha",
+    "feedback": "Faallooyinka",
+    "resources": "Khayraadka",
+    "settings": "Dejinta",
+    "offline_mode": "Hanaan Qad La'aan",
+    "sos_button": "SOS",
+    "alert_green": "Waa xilli wax ku beeraan wanaagsan. Maanta geli bacrinta nitrogen-ka.",
+    "alert_yellow": "Aagagga hooseeya sanduuqyo ciid ah ku daboo. Digaagga 24 saacadood gudahood gudaha u wareeji.",
+    "alert_red": "Xoolaha u wareeji Aagga B isla markiiba. Kaydka biyuhu wuu dhamaan doonaa."
+  }
+}

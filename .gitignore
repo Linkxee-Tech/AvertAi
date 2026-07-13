@@ -1,0 +1,27 @@
+# Python / Virtual Environment
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables & Secrets
+.env
+*.json
+!frontend/translations.json
+!frontend/firebase.json
+!mobile-apk-project/package.json
+!mobile-apk-project/package-lock.json
+!mobile-apk-project/capacitor.config.json
+
+# Node.js
+node_modules/
+mobile-apk-project/node_modules/
+
+# Android build files
+mobile-apk-project/android/app/build/
+mobile-apk-project/android/.gradle/
+mobile-apk-project/android/local.properties
+
+# Ignore logs and ML artifacts
+*.log
+*.pkl

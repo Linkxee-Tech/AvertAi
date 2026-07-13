@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg2://avertai:avertai@db:5432/avertai
+      REDIS_URL: redis://cache:6379/0
+    depends_on:
+      - db
+      - cache
+    volumes:
+      - .:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  db:
+    image: timescale/timescaledb-ha:pg15-latest
+    environment:
+      POSTGRES_USER: avertai
+      POSTGRES_PASSWORD: avertai
+      POSTGRES_DB: avertai
+    ports:
+      - "5432:5432"
+    volumes:
+      - avertai_pgdata:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  avertai_pgdata:

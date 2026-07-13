@@ -1,0 +1,12 @@
+{
+  "appId": "org.avertai.mobile",
+  "appName": "AvertAI",
+  "webDir": "../frontend/mobile",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "avertai-mobile",
+  "version": "1.0.0",
+  "description": "Capacitor wrapper that packages the AvertAI mobile PWA (../frontend/mobile) into a real installable Android APK / iOS app.",
+  "scripts": {
+    "sync": "cap sync",
+    "android": "cap open android",
+    "build-debug-apk": "npm run sync && node -e \"const {spawnSync}=require('child_process'); const isWin=process.platform==='win32'; const command=isWin?'cmd.exe':'./gradlew'; const args=isWin?['/d','/s','/c','gradlew.bat','assembleDebug']:[ 'assembleDebug']; const result=spawnSync(command,args,{cwd:'android',stdio:'inherit'}); if(result.error){console.error(result.error); process.exit(1);} process.exit(result.status ?? 0);\"",
+    "build-release-apk": "npm run sync && node -e \"const {spawnSync}=require('child_process'); const isWin=process.platform==='win32'; const command=isWin?'cmd.exe':'./gradlew'; const args=isWin?['/d','/s','/c','gradlew.bat','assembleRelease']:[ 'assembleRelease']; const result=spawnSync(command,args,{cwd:'android',stdio:'inherit'}); if(result.error){console.error(result.error); process.exit(1);} process.exit(result.status ?? 0);\""
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/camera": "^6.1.3",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/geolocation": "^6.1.1",
+    "@capacitor/network": "^6.0.4",
+    "@capacitor/push-notifications": "^6.0.5"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.4.1"
+  }
+}

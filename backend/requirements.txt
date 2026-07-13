@@ -1,0 +1,38 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+sqlalchemy==2.0.35
+pydantic==2.9.2
+pydantic-settings==2.5.2
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt<4.0.0
+python-multipart==0.0.9
+
+# Production database (DigitalOcean Managed PostgreSQL + PostGIS + TimescaleDB).
+# SQLite is used automatically in dev if DATABASE_URL is left unset (see core/config.py).
+psycopg2-binary==2.9.9
+
+# Async task queue for the broadcast dispatcher / batch prediction cron (see
+# services/comms_service.py and the "Internal Dispatcher" spec). Requires a
+# running Redis instance (see docker-compose.yml).
+celery==5.4.0
+redis==5.0.8
+
+# Africa's Talking SMS/USSD/Voice SDK. comms_service.py falls back to a
+# console-logging mock automatically if AFRICASTALKING_API_KEY is unset,
+# so this is only required for a real deployment.
+africastalking==1.2.9
+
+# Testing
+pytest==8.3.3
+httpx==0.27.2
+
+GeoAlchemy2>=0.14.3
+h3>=3.7.6
+Pillow>=10.0.0
+xgboost>=2.0.3
+google-cloud-storage>=2.14.0
+alembic
+firebase-admin==6.5.0
+scikit-learn>=1.3.0
+requests>=2.31.0

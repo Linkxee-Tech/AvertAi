@@ -1,0 +1,41 @@
+name: CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Log in to Docker Registry
+      uses: docker/login-action@v2
+      with:
+        registry: registry.digitalocean.com
+        username: ${{ secrets.DO_ACCESS_TOKEN }}
+        password: ${{ secrets.DO_ACCESS_TOKEN }}
+
+    - name: Build and Push Backend Docker Image
+      run: |
+        docker build -t registry.digitalocean.com/avertai/backend:latest .
+        docker push registry.digitalocean.com/avertai/backend:latest
+
+    - name: SSH into Droplet and Restart Backend
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.DROPLET_IP }}
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /opt/avertai
+          docker-compose pull
+          docker-compose up -d
+          # Optional: Run Alembic migrations
+          # docker-compose exec backend alembic upgrade head
+
+    - name: Trigger DO App Platform Deploy (Frontend Dashboard)
+      run: |
+        curl -X POST -H "Authorization: Bearer ${{ secrets.DO_ACCESS_TOKEN }}" \
+        "https://api.digitalocean.com/v2/apps/${{ secrets.DO_APP_ID }}/deployments"

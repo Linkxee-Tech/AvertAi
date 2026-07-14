@@ -6,7 +6,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+  mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
+
+  function renderMapbox() {
+      if(!cellData || !cellData.length) return;
+      
+      const geojson = {
+          type: 'FeatureCollection',
+          features: cellData.map(c => ({
+              type: 'Feature',
+              geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
+              properties: { 
+                  id: c.grid_id, 
+                  color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450'), 
+                  village: c.village_name 
+              }
+          }))
+      };
+
+      if (!mapExplorer && document.getElementById('mosaic')) {
+          document.getElementById('mosaic').innerHTML = '';
+          mapExplorer = new mapboxgl.Map({
+              container: 'mosaic',
+              style: 'mapbox://styles/mapbox/dark-v11',
+              center: [39.0, 5.0], // Center on IGAD
+              zoom: 4.5
+          });
+          
+          mapExplorer.on('load', () => {
+              mapExplorer.addSource('grids', { type: 'geojson', data: geojson });
+              mapExplorer.addLayer({
+                  id: 'grids-layer',
+                  type: 'circle',
+                  source: 'grids',
+                  paint: {
+                      'circle-radius': 5,
+                      'circle-color': ['get', 'color'],
+                      'circle-opacity': 0.8
+                  }
+              });
+              
+              mapExplorer.on('click', 'grids-layer', (e) => {
+                  const props = e.features[0].properties;
+                  const idx = cellData.findIndex(c => c.grid_id === props.id);
+                  if (idx >= 0) showCell(idx, props.color === '#C1453D' ? 'r' : (props.color === '#D9A441' ? 'y' : 'g'));
+              });
+              mapExplorer.on('mouseenter', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = 'pointer');
+              mapExplorer.on('mouseleave', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = '');
+          });
+      } else if (mapExplorer && mapExplorer.getSource('grids')) {
+          mapExplorer.getSource('grids').setData(geojson);
+      }
+  }
+
+</script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js'>
+  mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
+
+  function renderMapbox() {
+      if(!cellData || !cellData.length) return;
+      
+      const geojson = {
+          type: 'FeatureCollection',
+          features: cellData.map(c => ({
+              type: 'Feature',
+              geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
+              properties: { 
+                  id: c.grid_id, 
+                  color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450'), 
+                  village: c.village_name 
+              }
+          }))
+      };
+
+      if (!mapExplorer && document.getElementById('mosaic')) {
+          document.getElementById('mosaic').innerHTML = '';
+          mapExplorer = new mapboxgl.Map({
+              container: 'mosaic',
+              style: 'mapbox://styles/mapbox/dark-v11',
+              center: [39.0, 5.0], // Center on IGAD
+              zoom: 4.5
+          });
+          
+          mapExplorer.on('load', () => {
+              mapExplorer.addSource('grids', { type: 'geojson', data: geojson });
+              mapExplorer.addLayer({
+                  id: 'grids-layer',
+                  type: 'circle',
+                  source: 'grids',
+                  paint: {
+                      'circle-radius': 5,
+                      'circle-color': ['get', 'color'],
+                      'circle-opacity': 0.8
+                  }
+              });
+              
+              mapExplorer.on('click', 'grids-layer', (e) => {
+                  const props = e.features[0].properties;
+                  const idx = cellData.findIndex(c => c.grid_id === props.id);
+                  if (idx >= 0) showCell(idx, props.color === '#C1453D' ? 'r' : (props.color === '#D9A441' ? 'y' : 'g'));
+              });
+              mapExplorer.on('mouseenter', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = 'pointer');
+              mapExplorer.on('mouseleave', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = '');
+          });
+      } else if (mapExplorer && mapExplorer.getSource('grids')) {
+          mapExplorer.getSource('grids').setData(geojson);
+      }
+  }
+
+</script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css' rel='stylesheet' />
 <style>
   :root{
     --bg:#0E1A1B; --panel:#152524; --panel-2:#1B2E2C; --line:#28403B;
@@ -155,7 +265,7 @@
   /* ===== OVERVIEW (ANALYTICS) ===== */
   .ov-analytics-grid{ display:grid; grid-template-columns:1.3fr 1fr; gap:14px; }
   @media (max-width:900px){ .ov-analytics-grid{ grid-template-columns:1fr; } }
-  .mini-mosaic{ display:grid; grid-template-columns:repeat(16,1fr); gap:2px; height:110px; }
+  .mini-mosaic{ height:110px; width:100%; position:relative; }
   .mini-mosaic .cell{ border-radius:2px; }
 
   /* ===== GRID / MOSAIC (Prediction Explorer) ===== */
@@ -177,7 +287,7 @@
   .map-body{ flex:1; padding:16px 18px 18px; display:flex; flex-direction:column; gap:10px; min-height:420px; }
   .grid-wrap{ flex:1; position:relative; border:1px solid var(--line); border-radius:var(--radius);
     background: radial-gradient(ellipse at 30% 20%, rgba(79,168,160,0.06), transparent 60%), #0C1717; padding:14px; min-height:260px;}
-  .mosaic{ display:grid; grid-template-columns: repeat(16, 1fr); gap:3px; height:100%; }
+  .mosaic{ height:100%; width:100%; }
   .cell{ border-radius:2px; cursor:pointer; transition:transform .12s ease; outline:1px solid rgba(237,230,214,0.04);}
   .cell:hover{ transform:scale(1.12); z-index:2; outline:1px solid rgba(237,230,214,0.4);}
   .cell.g{ background: color-mix(in srgb, var(--green) 55%, #0C1717); }
@@ -1021,6 +1131,8 @@ let cellGridIds = new Array(50000).fill(null); // populated with real grid_ids w
 [18,19,20,34,35,36,50,51].forEach(i=>{ if(i<50000) cellStates[i]='r'; });
 [60,61,62,63,76,77,78].forEach(i=>{ if(i<50000) cellStates[i]='y'; });
 let baseCellStates = cellStates.slice();
+  let cellData = [];
+  let mapExplorer = null;
 function renderMosaic(container, states, clickable){
   if (states.length > 500) {
       // Checkpoint 7.2: Vector tile aggregation via Canvas for 50k grids
@@ -1075,7 +1187,9 @@ async function loadGridsFromAPI(windowLabel){
     const newStates = new Array(n), newIds = new Array(n);
     data.cells.slice(0, n).forEach((c, i) => { newStates[i] = codeToClass[c.action_code] || 'g'; newIds[i] = c.grid_id; });
     cellStates = newStates; cellGridIds = newIds; baseCellStates = cellStates.slice();
-    renderMosaic(document.getElementById('mosaic'), cellStates, true);
+    cellData = data.cells || [];
+      renderMapbox();
+      renderMosaic(document.getElementById('mosaic'), cellStates, true);
     renderMosaic(document.getElementById('miniMosaic'), cellStates.slice(0,64), false);
     renderMosaic(document.getElementById('mMiniMosaic') || document.createElement('div'), cellStates.slice(0,64), false);
     return true;
@@ -1910,6 +2024,60 @@ function tick(){ document.getElementById('clock').textContent = 'EAT ' + new Dat
 tick(); setInterval(tick, 1000);
 checkBackendReachable();
 setInterval(checkBackendReachable, 15000); // keep the status chip honest if the backend starts/stops later
+
+  mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
+
+  function renderMapbox() {
+      if(!cellData || !cellData.length) return;
+      
+      const geojson = {
+          type: 'FeatureCollection',
+          features: cellData.map(c => ({
+              type: 'Feature',
+              geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
+              properties: { 
+                  id: c.grid_id, 
+                  color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450'), 
+                  village: c.village_name 
+              }
+          }))
+      };
+
+      if (!mapExplorer && document.getElementById('mosaic')) {
+          document.getElementById('mosaic').innerHTML = '';
+          mapExplorer = new mapboxgl.Map({
+              container: 'mosaic',
+              style: 'mapbox://styles/mapbox/dark-v11',
+              center: [39.0, 5.0], // Center on IGAD
+              zoom: 4.5
+          });
+          
+          mapExplorer.on('load', () => {
+              mapExplorer.addSource('grids', { type: 'geojson', data: geojson });
+              mapExplorer.addLayer({
+                  id: 'grids-layer',
+                  type: 'circle',
+                  source: 'grids',
+                  paint: {
+                      'circle-radius': 5,
+                      'circle-color': ['get', 'color'],
+                      'circle-opacity': 0.8
+                  }
+              });
+              
+              mapExplorer.on('click', 'grids-layer', (e) => {
+                  const props = e.features[0].properties;
+                  const idx = cellData.findIndex(c => c.grid_id === props.id);
+                  if (idx >= 0) showCell(idx, props.color === '#C1453D' ? 'r' : (props.color === '#D9A441' ? 'y' : 'g'));
+              });
+              mapExplorer.on('mouseenter', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = 'pointer');
+              mapExplorer.on('mouseleave', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = '');
+          });
+      } else if (mapExplorer && mapExplorer.getSource('grids')) {
+          mapExplorer.getSource('grids').setData(geojson);
+      }
+  }
+
 </script>
 </body>
 </html>

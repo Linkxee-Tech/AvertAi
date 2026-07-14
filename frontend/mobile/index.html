@@ -13,6 +13,50 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js'>
+  mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
+
+  function renderMapboxMobile() {
+      if(!cellData || !cellData.length) return;
+      
+      const geojson = {
+          type: 'FeatureCollection',
+          features: cellData.map(c => ({
+              type: 'Feature',
+              geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
+              properties: { color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450') }
+          }))
+      };
+
+      if (!mapMobile && document.getElementById('mMiniMosaic')) {
+          document.getElementById('mMiniMosaic').innerHTML = '';
+          mapMobile = new mapboxgl.Map({
+              container: 'mMiniMosaic',
+              style: 'mapbox://styles/mapbox/dark-v11',
+              center: [39.0, 5.0],
+              zoom: 3.5
+          });
+          
+          mapMobile.on('load', () => {
+              mapMobile.addSource('grids', { type: 'geojson', data: geojson });
+              mapMobile.addLayer({
+                  id: 'grids-layer',
+                  type: 'circle',
+                  source: 'grids',
+                  paint: {
+                      'circle-radius': 4,
+                      'circle-color': ['get', 'color'],
+                      'circle-opacity': 0.8
+                  }
+              });
+          });
+      } else if (mapMobile && mapMobile.getSource('grids')) {
+          mapMobile.getSource('grids').setData(geojson);
+      }
+  }
+
+</script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css' rel='stylesheet' />
 <style>
   :root{
     --bg:#0E1A1B; --panel:#152524; --panel-2:#1B2E2C; --line:#28403B;
@@ -155,7 +199,49 @@
   on a phone means the phone itself, not your development machine.
   See mobile-apk-project/README.md for details.
 -->
-<script>window.AVERTAI_API_BASE = null; /* e.g. 'https://api.avertai.org/api/v1' — leave null to use the localhost default below */</script>
+<script>window.AVERTAI_API_BASE = null; /* e.g. 'https://api.avertai.org/api/v1' — leave null to use the localhost default below */
+  mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
+
+  function renderMapboxMobile() {
+      if(!cellData || !cellData.length) return;
+      
+      const geojson = {
+          type: 'FeatureCollection',
+          features: cellData.map(c => ({
+              type: 'Feature',
+              geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
+              properties: { color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450') }
+          }))
+      };
+
+      if (!mapMobile && document.getElementById('mMiniMosaic')) {
+          document.getElementById('mMiniMosaic').innerHTML = '';
+          mapMobile = new mapboxgl.Map({
+              container: 'mMiniMosaic',
+              style: 'mapbox://styles/mapbox/dark-v11',
+              center: [39.0, 5.0],
+              zoom: 3.5
+          });
+          
+          mapMobile.on('load', () => {
+              mapMobile.addSource('grids', { type: 'geojson', data: geojson });
+              mapMobile.addLayer({
+                  id: 'grids-layer',
+                  type: 'circle',
+                  source: 'grids',
+                  paint: {
+                      'circle-radius': 4,
+                      'circle-color': ['get', 'color'],
+                      'circle-opacity': 0.8
+                  }
+              });
+          });
+      } else if (mapMobile && mapMobile.getSource('grids')) {
+          mapMobile.getSource('grids').setData(geojson);
+      }
+  }
+
+</script>
 <script>
 window.onerror = function(msg, url, line, col, error) {
   alert("JS Error: " + msg + " at line " + line);
@@ -628,6 +714,48 @@ if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Pus
         setTimeout(() => goToScreen('detail'), 300); // deep linking to detail page
     });
 }
+
+  mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
+
+  function renderMapboxMobile() {
+      if(!cellData || !cellData.length) return;
+      
+      const geojson = {
+          type: 'FeatureCollection',
+          features: cellData.map(c => ({
+              type: 'Feature',
+              geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
+              properties: { color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450') }
+          }))
+      };
+
+      if (!mapMobile && document.getElementById('mMiniMosaic')) {
+          document.getElementById('mMiniMosaic').innerHTML = '';
+          mapMobile = new mapboxgl.Map({
+              container: 'mMiniMosaic',
+              style: 'mapbox://styles/mapbox/dark-v11',
+              center: [39.0, 5.0],
+              zoom: 3.5
+          });
+          
+          mapMobile.on('load', () => {
+              mapMobile.addSource('grids', { type: 'geojson', data: geojson });
+              mapMobile.addLayer({
+                  id: 'grids-layer',
+                  type: 'circle',
+                  source: 'grids',
+                  paint: {
+                      'circle-radius': 4,
+                      'circle-color': ['get', 'color'],
+                      'circle-opacity': 0.8
+                  }
+              });
+          });
+      } else if (mapMobile && mapMobile.getSource('grids')) {
+          mapMobile.getSource('grids').setData(geojson);
+      }
+  }
+
 </script>
 </body>
 </html>

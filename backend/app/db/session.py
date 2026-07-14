@@ -6,11 +6,14 @@ at a DigitalOcean Managed PostgreSQL (with the PostGIS + TimescaleDB
 extensions enabled) in production via the environment variable — no code
 changes needed beyond the geometry-column note in models.py.
 """
+import logging
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.engine import Engine
 
 from app.core.config import get_settings
+
+logger = logging.getLogger("avertai.db")
 
 settings = get_settings()
 
@@ -32,12 +35,19 @@ Base = declarative_base()
 @event.listens_for(Base.metadata, "after_create")
 def after_create(target, connection, **kw):
     if settings.DATABASE_URL.startswith("postgres"):
-        # Configure the hypertable for TimescaleDB if not already set
-        # This will silently ignore if it's already a hypertable
         from sqlalchemy import text
-        connection.execute(
-            text("SELECT create_hypertable('predictions', 'predicted_at', if_not_exists => TRUE);")
-        )
+        try:
+            connection.execute(text("CREATE EXTENSION IF NOT EXISTS timescaledb;"))
+        except Exception as exc:
+            logger.warning("Skipping TimescaleDB extension setup: %s", exc)
+            return
+
+        try:
+            connection.execute(
+                text("SELECT create_hypertable('predictions', 'predicted_at', if_not_exists => TRUE);")
+            )
+        except Exception as exc:
+            logger.warning("Skipping predictions hypertable setup: %s", exc)
 
 def get_db():
     db = SessionLocal()

@@ -103,7 +103,7 @@ def predict_mosaic(window: str = Query("3-day"), db: Session = Depends(get_db)):
     """Powers the Prediction Explorer / Overview heatmap grid-cell mosaic."""
     days_map = {"1-day": 1, "3-day": 3, "7-day": 7}
     day_offset = days_map.get(window, 3)
-    cells = db.query(GridCell).limit(128).all()
+    cells = db.query(GridCell).all()
     result = []
     for cell in cells:
         flood, drought, code = generate_prediction(cell.id, day_offset=day_offset)

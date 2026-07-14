@@ -67,10 +67,15 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.on_event("startup")
 def on_startup():
-    with engine.connect() as conn:
-        conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis;"))
-        conn.execute(text("CREATE EXTENSION IF NOT EXISTS timescaledb;"))
-        conn.commit()
+    if settings.DATABASE_URL.startswith("postgres"):
+        with engine.connect() as conn:
+            for extension_name in ("postgis", "timescaledb"):
+                try:
+                    conn.execute(text(f"CREATE EXTENSION IF NOT EXISTS {extension_name};"))
+                except Exception as exc:
+                    import logging
+                    logging.getLogger("avertai.db").warning("Skipping %s extension setup: %s", extension_name, exc)
+            conn.commit()
     Base.metadata.create_all(bind=engine)
     # Auto-seed only if the table is empty, so repeated restarts don't duplicate data.
     from app.db.session import SessionLocal

@@ -14,15 +14,15 @@
   
   <style>
     :root {
-      --bg-dark: #070B0B;
-      --bg-card: rgba(12, 23, 23, 0.6);
-      --primary: #00F0FF;
-      --primary-dim: rgba(0, 240, 255, 0.2);
-      --secondary: #39FF14;
-      --accent: #FF3366;
-      --text-main: #FFFFFF;
-      --text-muted: #8E9BAE;
-      --radius: 16px;
+      --bg-dark: #0E1A1B;
+      --bg-card: #152524;
+      --primary: #4FA8A0;
+      --primary-dim: rgba(79, 168, 160, 0.2);
+      --secondary: #D9A441;
+      --accent: #C1453D;
+      --text-main: #EDE6D6;
+      --text-muted: #9BAEA0;
+      --radius: 8px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -766,7 +766,8 @@
       };
 
       try {
-        const res = await fetch('https://avertai-backend.onrender.com/api/v1/applications/apply', {
+        const API_BASE = window.AVERTAI_API_BASE || 'http://127.0.0.1:8000/api/v1';
+        const res = await fetch(`${API_BASE}/applications/apply`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

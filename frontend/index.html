@@ -341,10 +341,68 @@
     .footer-grid ul li a:hover { color: var(--primary); }
     .copyright { text-align: center; color: var(--text-muted); font-size: 14px; }
 
+    /* Blog & Resources */
+    .resource-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .resource-card h4 { font-size: 18px; color: #fff; margin-bottom: 8px; }
+    .resource-card p { color: var(--text-muted); font-size: 14px; margin-bottom: 12px; }
+    .resource-link { color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 600; }
+
+    /* Team Section */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .team-member {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: var(--radius);
+      padding: 30px;
+      text-align: center;
+    }
+    .team-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      margin: 0 auto 16px auto;
+      border: 2px solid var(--primary-dim);
+    }
+    .team-member h4 { font-size: 18px; margin-bottom: 4px; }
+    .team-member p { color: var(--primary); font-size: 13px; margin-bottom: 12px; }
+
+    /* Cookie Consent */
+    .cookie-banner {
+      position: fixed;
+      bottom: 20px;
+      left: 5%;
+      right: 5%;
+      background: var(--bg-card);
+      border: 1px solid var(--primary-dim);
+      border-radius: var(--radius);
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 9999;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+    .cookie-banner p { font-size: 14px; margin: 0; color: #fff; }
+    .cookie-banner .btn-primary { padding: 8px 16px; font-size: 13px; }
+
     @media (max-width: 768px) {
       .hero h1 { font-size: 40px; }
       .app-features { flex-direction: column; }
       .nav-links { display: none; }
+      .cookie-banner { flex-direction: column; gap: 16px; text-align: center; }
     }
   </style>
 </head>
@@ -429,6 +487,11 @@
         <div class="stat-num">7</div>
         <div class="stat-label">IGAD Countries Covered</div>
       </div>
+    </div>
+
+    <!-- Mini Heatmap Placeholder -->
+    <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius); height: 400px; display: flex; align-items: center; justify-content: center; margin-bottom: 60px;">
+      <p style="color: var(--text-muted); font-size: 18px;">🌍 Interactive Regional Risk Heatmap Loading...</p>
     </div>
 
     <div class="testimonial">
@@ -537,34 +600,114 @@
     <h2 class="section-title">FAQ & Resources</h2>
     <p class="section-subtitle">Everything you need to know about AvertAI.</p>
     
-    <div style="max-width: 800px; margin: 0 auto;">
-      <div class="faq-item">
-        <h4>Is AvertAI free for farmers?</h4>
-        <p>Yes, the service is completely free for farmers and pastoralists. Alerts are subsidized by our NGO and Government partners.</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+      <!-- FAQ Accordion -->
+      <div>
+        <h3 style="margin-bottom: 20px; font-family: 'Outfit', sans-serif;">Frequently Asked Questions</h3>
+        <div class="faq-item">
+          <h4>Is AvertAI free for farmers?</h4>
+          <p>Yes, the service is completely free for farmers and pastoralists. Alerts are subsidized by our NGO and Government partners.</p>
+        </div>
+        <div class="faq-item">
+          <h4>How accurate are the predictions?</h4>
+          <p>Our XGBoost models currently operate at an 82% accuracy rate in pilot regions, utilizing the latest Open-Meteo satellite streams.</p>
+        </div>
+        <div class="faq-item">
+          <h4>How do I get alerts in my language?</h4>
+          <p>You can select your preferred language during onboarding via the Mobile App or the USSD menu.</p>
+        </div>
       </div>
-      <div class="faq-item">
-        <h4>How accurate are the predictions?</h4>
-        <p>Our XGBoost models currently operate at an 82% accuracy rate in pilot regions, utilizing the latest Open-Meteo satellite streams.</p>
-      </div>
-      <div class="faq-item">
-        <h4>How do I get alerts in my language?</h4>
-        <p>You can select your preferred language during onboarding via the Mobile App or the USSD menu.</p>
+
+      <!-- Blog & Resources -->
+      <div>
+        <h3 style="margin-bottom: 20px; font-family: 'Outfit', sans-serif;">Knowledge Hub</h3>
+        <div class="resource-card">
+          <h4>How to interpret RED/YELLOW/GREEN alerts</h4>
+          <p>A simple guide for community leaders to explain AvertAI risk levels to pastoralists.</p>
+          <a href="#" class="resource-link">Read Article →</a>
+        </div>
+        <div class="resource-card">
+          <h4>AvertAI Technical Whitepaper v1.0</h4>
+          <p>In-depth documentation of our AI modeling and data fusion pipeline for NGOs and Governments.</p>
+          <a href="#" class="resource-link">Download PDF ↓</a>
+        </div>
+        <div class="resource-card">
+          <h4>Understanding IGAD's climate risks</h4>
+          <p>A comprehensive overview of the unique challenges facing the Horn of Africa.</p>
+          <a href="#" class="resource-link">Read Article →</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- 7. About Us -->
+  <!-- 7. About Us & Team -->
   <section id="about">
     <h2 class="section-title">About Us</h2>
     <p class="section-subtitle" style="margin-bottom: 30px;">
       AvertAI is a climate-tech initiative dedicated to protecting lives and livelihoods in the IGAD region through accessible, AI-driven early warnings.
     </p>
-    <div style="text-align: center; color: var(--text-muted);">
+
+    <div class="team-grid">
+      <div class="team-member">
+        <div class="team-photo"></div>
+        <h4>Team Member 1</h4>
+        <p>AI Engineer</p>
+        <a href="#" style="color: var(--text-muted); text-decoration: none;">LinkedIn</a>
+      </div>
+      <div class="team-member">
+        <div class="team-photo"></div>
+        <h4>Team Member 2</h4>
+        <p>Data Scientist</p>
+        <a href="#" style="color: var(--text-muted); text-decoration: none;">LinkedIn</a>
+      </div>
+      <div class="team-member">
+        <div class="team-photo"></div>
+        <h4>Team Member 3</h4>
+        <p>Climate Expert</p>
+        <a href="#" style="color: var(--text-muted); text-decoration: none;">LinkedIn</a>
+      </div>
+      <div class="team-member">
+        <div class="team-photo"></div>
+        <h4>Team Member 4</h4>
+        <p>Community Liaison</p>
+        <a href="#" style="color: var(--text-muted); text-decoration: none;">LinkedIn</a>
+      </div>
+    </div>
+    
+    <div style="text-align: center; color: var(--text-muted); margin-top: 60px;">
       <p>Built with ❤️ for the IGAD Husika Hackathon 2026.</p>
     </div>
   </section>
 
-  <!-- 8. Footer -->
+  <!-- 8. Contact & Support -->
+  <section id="contact">
+    <h2 class="section-title">Contact & Support</h2>
+    <p class="section-subtitle">Need help or want to partner with us? Get in touch.</p>
+
+    <div class="form-container">
+      <form id="contact-form">
+        <div class="input-group">
+          <label>Your Name</label>
+          <input type="text" required>
+        </div>
+        <div class="input-group">
+          <label>Email Address</label>
+          <input type="email" required>
+        </div>
+        <div class="input-group">
+          <label>Subject</label>
+          <input type="text" required>
+        </div>
+        <div class="input-group">
+          <label>Message</label>
+          <textarea rows="4" required></textarea>
+        </div>
+        <button type="button" class="btn-secondary" style="width: 100%; border: none;" onclick="alert('Message sent! Our support team will respond shortly.')">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Global Footer -->
   <footer>
     <div class="footer-grid">
       <div>
@@ -649,6 +792,21 @@
         btn.disabled = false;
       }
     });
+    // Cookie Consent Logic
+    const cookieBanner = document.getElementById('cookie-banner');
+    if (!localStorage.getItem('avertAiCookieConsent')) {
+      cookieBanner.style.display = 'flex';
+    }
+    function acceptCookies() {
+      localStorage.setItem('avertAiCookieConsent', 'true');
+      cookieBanner.style.display = 'none';
+    }
   </script>
+
+  <!-- Cookie Consent Popup -->
+  <div class="cookie-banner" id="cookie-banner" style="display: none;">
+    <p>🍪 We use cookies to ensure you get the best experience on our platform and to analyze risk data. <a href="#" style="color: var(--primary);">Learn more</a>.</p>
+    <button class="btn-primary" style="border: none; cursor: pointer;" onclick="acceptCookies()">Accept All</button>
+  </div>
 </body>
 </html>

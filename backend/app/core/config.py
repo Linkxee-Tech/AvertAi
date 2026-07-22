@@ -17,7 +17,16 @@ class Settings(BaseSettings):
     APP_NAME: str = "AvertAI API"
     ENV: str = "development"
     API_V1_PREFIX: str = "/api/v1"
-    CORS_ORIGINS: list[str] = ["https://dashboard.avertai.org", "capacitor://localhost", "http://localhost"]
+    CORS_ORIGINS: list[str] = [
+        "https://dashboard.avertai.org",
+        "capacitor://localhost",
+        "http://localhost",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "null"
+    ]
 
     # --- Database ---
     # Local dev default: SQLite file. Production: postgresql+psycopg2://user:pass@host:5432/avertai

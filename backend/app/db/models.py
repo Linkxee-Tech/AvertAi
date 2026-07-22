@@ -165,3 +165,20 @@ class Resource(Base):
 
     if is_postgres:
         geom = Column(Geometry("POINT", srid=4326))
+
+
+class OrganizationApplication(Base):
+    __tablename__ = "organization_applications"
+
+    id = Column(String, primary_key=True, default=gen_uuid)
+    org_name = Column(String(160), nullable=False)
+    country = Column(String(80))
+    org_type = Column(String(80))
+    website = Column(String(255))
+    admin_name = Column(String(120), nullable=False)
+    admin_title = Column(String(80))
+    email = Column(String(255), nullable=False)
+    phone = Column(String(20))
+    purpose = Column(Text)
+    status = Column(String(20), default="Pending")  # Pending | Approved | Rejected
+    created_at = Column(DateTime, default=datetime.utcnow)

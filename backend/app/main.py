@@ -18,7 +18,7 @@ from app.core.config import get_settings
 from app.db.session import Base, engine
 from sqlalchemy import text
 from app.services.rate_limiter import is_rate_limited
-from app.routers import auth, predictions, feedback, broadcasts, users, resources, system, webhooks
+from app.routers import auth, predictions, feedback, broadcasts, users, resources, system, webhooks, applications
 from fastapi import WebSocket, WebSocketDisconnect
 
 settings = get_settings()
@@ -98,6 +98,7 @@ app.include_router(users.router, prefix=settings.API_V1_PREFIX)
 app.include_router(resources.router, prefix=settings.API_V1_PREFIX)
 app.include_router(system.router, prefix=settings.API_V1_PREFIX)
 app.include_router(webhooks.router, prefix=settings.API_V1_PREFIX)
+app.include_router(applications.router, prefix=settings.API_V1_PREFIX)
 
 @app.websocket("/api/v1/ws/live")
 async def live_feedback_websocket(websocket: WebSocket):

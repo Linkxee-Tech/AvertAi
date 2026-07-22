@@ -325,5 +325,123 @@
     </div>
   </section>
 
+  <!-- NGO Application Form -->
+  <section class="hero" style="padding-top: 40px; margin-bottom: 80px;" id="apply">
+    <div class="badge">Partner With Us</div>
+    <h2 style="font-family: 'Outfit', sans-serif; font-size: 40px; margin-bottom: 16px;">NGO & Government Portal</h2>
+    <p style="margin-bottom: 32px; font-size: 16px;">Apply for official admin access to the AvertAI Command Dashboard to orchestrate disaster response and manage community feedback.</p>
+    
+    <div style="background: rgba(12, 23, 23, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius); padding: 40px; width: 100%; max-width: 600px; text-align: left;">
+      <form id="ngo-apply-form" style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Organization Name</label>
+            <input type="text" id="org_name" required style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Organization Type</label>
+            <select id="org_type" required style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; appearance: none;">
+              <option value="NGO">NGO</option>
+              <option value="Government">Government Agency</option>
+              <option value="UN">UN Agency</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Country of Operation</label>
+            <input type="text" id="country" required style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Official Website</label>
+            <input type="url" id="website" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;" placeholder="https://...">
+          </div>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Your Full Name</label>
+            <input type="text" id="admin_name" required style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Job Title</label>
+            <input type="text" id="admin_title" required style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Work Email</label>
+            <input type="email" id="email" required style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Phone Number</label>
+            <input type="tel" id="phone" required style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;">
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Purpose of Application</label>
+          <textarea id="purpose" required rows="3" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; resize: vertical;"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" style="margin-top: 10px; cursor: pointer; border: none; width: 100%;" id="submit-btn">Submit Application</button>
+        <p id="form-msg" style="text-align: center; font-size: 14px; margin-top: 10px; color: var(--primary); display: none;"></p>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById('ngo-apply-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      const msg = document.getElementById('form-msg');
+      btn.innerText = 'Submitting...';
+      btn.disabled = true;
+      
+      const payload = {
+        org_name: document.getElementById('org_name').value,
+        country: document.getElementById('country').value,
+        org_type: document.getElementById('org_type').value,
+        website: document.getElementById('website').value || "N/A",
+        admin_name: document.getElementById('admin_name').value,
+        admin_title: document.getElementById('admin_title').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        purpose: document.getElementById('purpose').value
+      };
+
+      try {
+        const res = await fetch('https://avertai-backend.onrender.com/api/v1/applications/apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        if (res.ok) {
+          msg.innerText = "Application submitted successfully! Our team will review it shortly.";
+          msg.style.color = 'var(--primary)';
+          msg.style.display = 'block';
+          document.getElementById('ngo-apply-form').reset();
+        } else {
+          const err = await res.json();
+          msg.innerText = "Error: " + (err.error || err.detail || "Submission failed");
+          msg.style.color = 'var(--red)';
+          msg.style.display = 'block';
+        }
+      } catch (err) {
+        msg.innerText = "Network Error. Please try again later.";
+        msg.style.color = 'var(--red)';
+        msg.style.display = 'block';
+      } finally {
+        btn.innerText = 'Submit Application';
+        btn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>

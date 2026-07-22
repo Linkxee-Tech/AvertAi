@@ -94,8 +94,9 @@ def dashboard_login(payload: DashboardLoginRequest, db: Session = Depends(get_db
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "2FA code required")
     # Production: verify payload.totp_code against a TOTP secret (pyotp) stored per-admin.
     # Demo acceptance: any 6-digit code, matching the frontend's demo 2FA screen.
-    if len(payload.totp_code) != 6 or not payload.totp_code.isdigit():
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid 2FA code")
+    if payload.totp_code != "123456":
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid 2FA code. Please use 123456 for the hackathon demo.")
+
     user.last_active = datetime.utcnow()
     db.commit()
     return {

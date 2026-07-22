@@ -19,6 +19,7 @@ from app.db.session import Base, engine
 from sqlalchemy import text
 from app.services.rate_limiter import is_rate_limited
 from app.routers import auth, predictions, feedback, broadcasts, users, resources, system, webhooks
+from fastapi import WebSocket, WebSocketDisconnect
 
 settings = get_settings()
 
@@ -97,6 +98,20 @@ app.include_router(users.router, prefix=settings.API_V1_PREFIX)
 app.include_router(resources.router, prefix=settings.API_V1_PREFIX)
 app.include_router(system.router, prefix=settings.API_V1_PREFIX)
 app.include_router(webhooks.router, prefix=settings.API_V1_PREFIX)
+
+@app.websocket("/api/v1/ws/live")
+async def live_feedback_websocket(websocket: WebSocket):
+    """
+    Accepts the frontend's websocket connection for live feedback.
+    Currently acts as a placeholder to prevent 403/404 errors on the frontend.
+    """
+    await websocket.accept()
+    try:
+        while True:
+            # Keep connection alive, wait for incoming messages (if any)
+            _ = await websocket.receive_text()
+    except WebSocketDisconnect:
+        pass
 
 
 @app.get("/")

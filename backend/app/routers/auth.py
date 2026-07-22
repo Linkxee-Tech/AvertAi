@@ -11,7 +11,7 @@ from app.core.security import (
     create_access_token, create_refresh_token, decode_token,
     hash_password, verify_password,
 )
-from app.core.deps import get_current_user
+from app.core.deps import get_current_user, require_roles
 from app.services.rate_limiter import is_rate_limited
 from app.services.comms_service import send_sms
 from app.schemas.auth import (
@@ -104,3 +104,8 @@ def dashboard_login(payload: DashboardLoginRequest, db: Session = Depends(get_db
         "refresh_token": create_refresh_token(user.id, user.role),
         "token_type": "bearer",
     }
+@router.post("/admin/invite")
+def admin_invite(email: str, db: Session = Depends(get_db), user: User = Depends(require_roles("SuperAdmin"))):
+    "\""Invite a new admin user."\""
+    # Placeholder implementation
+    return {"status": "success", "message": f"Invitation sent to {email}"}

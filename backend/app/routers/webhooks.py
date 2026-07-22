@@ -51,7 +51,7 @@ def set_ussd_lang(session_id: str, lang: str):
             pass
 
 
-@router.post("/ussd")
+@router.post("/ussd/callback")
 def ussd_webhook(
     sessionId: str = Form(...),
     serviceCode: str = Form(...),

@@ -452,7 +452,7 @@
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card">
     <div class="login-brand">
-      <img src="logo.png" class="brand-mark" style="border:none; border-radius: 50%; background: white; object-fit: cover;" alt="Logo">
+      <img src="logo.png" class="brand-mark" style="border:none; border-radius: 50%; object-fit: cover;" alt="Logo">
       <div class="brand-text">AvertAI</div>
       <div class="brand-sub">NGO / Government Console</div>
     </div>
@@ -497,7 +497,7 @@
 
   <div class="topbar">
     <div class="brand">
-      <img src="logo.png" class="brand-mark" style="border:none; border-radius: 50%; background: white; object-fit: cover;" alt="Logo">
+      <img src="logo.png" class="brand-mark" style="border:none; border-radius: 50%; object-fit: cover;" alt="Logo">
       <div><div class="brand-text">AvertAI</div><div class="brand-sub">Early Warning Ops Console</div></div>
     </div>
     <div class="topbar-right">
@@ -550,7 +550,8 @@
       <div class="nav-item" data-page="integrations"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 7L3 10l4 3M13 7l4 3-4 3M11 5l-2 10"/></svg><span class="nav-label">API &amp; Integrations</span></div>
 
       <div class="nav-group-label">Account</div>
-      <div class="nav-item" id="navSecurity"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2l6 3v5c0 4-2.5 6.5-6 8-3.5-1.5-6-4-6-8V5z"/></svg><span class="nav-label">Security / Sign out</span></div>
+      <div class="nav-item" data-page="security" id="navSecurity"><svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2l6 3v5c0 4-2.5 6.5-6 8-3.5-1.5-6-4-6-8V5z"/></svg><span class="nav-label">Security Details</span></div>
+      <div class="nav-item" id="navLogout"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span class="nav-label">Log Out</span></div>
     </div>
 
     <div class="content" id="content">
@@ -780,6 +781,26 @@
         </div>
       </div>
 
+      <!-- SECURITY DETAILS -->
+      <div class="page" id="page-security">
+        <div class="panel-head"><div><div class="panel-eyebrow">Account</div><div class="panel-title">Security Details</div></div></div>
+        <div class="page-body">
+          <div class="stat-card" style="margin-bottom: 20px;">
+            <div class="stat-label">Two-Factor Authentication (2FA)</div>
+            <div style="font-size: 14px; margin-top: 10px;">Status: <span style="color: var(--green);">Enabled</span> (Authenticator App)</div>
+            <button class="primary-btn" style="width: auto; margin-top: 15px;">Manage 2FA Settings</button>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Recent Login Activity</div>
+            <div style="font-size: 12px; margin-top: 10px; color: var(--sand-dim);">
+              <p>• Today at 10:45 AM - Nairobi, Kenya (IP: 197.232.x.x)</p>
+              <p>• Yesterday at 02:15 PM - Nairobi, Kenya (IP: 197.232.x.x)</p>
+            </div>
+            <button class="btn-sm" style="margin-top: 15px; color: var(--red); border-color: var(--red);">Log out of all other sessions</button>
+          </div>
+        </div>
+      </div>
+
       <!-- MOBILE APP -->
       <div class="page" id="page-mobile">
         <div class="panel-head"><div><div class="panel-eyebrow">React Native · 8 screens</div><div class="panel-title">Mobile App Preview</div></div></div>
@@ -983,9 +1004,9 @@ document.getElementById('loginSubmit').addEventListener('click', ()=>{
   otpBoxes.querySelector('input').focus();
 });
 const ROLE_PAGES = {
-  SuperAdmin: ['overview','predexplorer','broadcast','moderation','resources','users','applications','syslogs','mobile','voice','ussd','integrations'],
-  Moderator:  ['overview','predexplorer','broadcast','moderation','resources','mobile','voice','ussd','integrations'],
-  Viewer:     ['overview','predexplorer','resources','mobile','voice','ussd','integrations'],
+  SuperAdmin: ['overview','predexplorer','broadcast','moderation','resources','users','applications','syslogs','mobile','voice','ussd','integrations','security'],
+  Moderator:  ['overview','predexplorer','broadcast','moderation','resources','mobile','voice','ussd','integrations','security'],
+  Viewer:     ['overview','predexplorer','resources','mobile','voice','ussd','integrations','security'],
 };
 function applyRoleGating(role){
   document.getElementById('currentRoleChip').textContent = 'Role: ' + role;
@@ -1027,7 +1048,7 @@ document.getElementById('otpSubmit').addEventListener('click', async ()=>{
     btn.textContent = 'Verify & enter console';
   }
 });
-document.getElementById('navSecurity').addEventListener('click', ()=>{
+document.getElementById('navLogout').addEventListener('click', ()=>{
   document.getElementById('loginOverlay').classList.remove('hide');
   document.getElementById('loginStep1').style.display='block';
   document.getElementById('loginStep2').style.display='none';
@@ -1137,9 +1158,9 @@ let users = [
   {name:"Nyaboke S.", phone:"+254 7•• •••558", region:"Kenya", role:"Viewer", status:"Active", last:"40m ago"},
 ];
 const voiceLangs = [
-  {lang:"Amharic", native:"አማርኛ", sample:"“ከብቶችዎን ወደ ደህንነት ቀጠና ቢ ያንቀሳቅሱ። የውሃ ክምችት በ36 ሰዓት ውስጥ ያልቃል።”"},
-  {lang:"Swahili", native:"Kiswahili", sample:"“Hamishia mifugo yako eneo salama la B mara moja. Akiba ya maji itaisha ndani ya masaa 36.”"},
-  {lang:"Somali", native:"Af-Soomaali", sample:"“Xoolahaaga u wareeji gobolka amaanka ee B isla markiiba. Kaydka biyuhu wuxuu dhamaan doonaa 36 saac gudahood.”"},
+  {lang:"Amharic", native:"አማርኛ", sample:"ከብቶችዎን ወደ ዞን B በአስቸኳይ ያንቀሳቅሱ።"},
+  {lang:"Swahili", native:"Kiswahili", sample:"Hamishia mifugo yako eneo salama la B mara moja. Akiba ya maji itaisha ndani ya masaa 36."},
+  {lang:"Somali", native:"Af-Soomaali", sample:"Xoolahaaga u wareeji gobolka amaanka ee B isla markiiba. Kaydka biyuhu wuxuu dhamaan doonaa 36 saac gudahood."},
 ];
 const codeMap = {r:'RED', y:'YELLOW', g:'GREEN'};
 const codeColor = {RED:'var(--red)', YELLOW:'var(--yellow)', GREEN:'var(--green)'};

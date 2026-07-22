@@ -25,14 +25,14 @@ VILLAGES = [
     ("Moyale", "Marsabit", "Kenya", 3.5167, 39.0500),
 ]
 
-def generate_50k_grids(db):
-    print("Generating 50,000 H3 grids... This may take a moment.")
+def generate_h3_grids(db):
+    print("Generating H3 grids... This may take a moment.")
     # Central point in East Africa (Kenya/Ethiopia border region)
     center_lat, center_lon = 3.5, 39.0
     center_h3 = h3.latlng_to_cell(center_lat, center_lon, 7) # res 7 is ~5.16 sq km
     
-    # k=129 gives ~50,000 cells
-    cells = list(h3.grid_disk(center_h3, 129))[:50000]
+    # k=41 gives ~5,000 cells (safe for free-tier DB constraints)
+    cells = list(h3.grid_disk(center_h3, 41))[:5000]
     
     rnd = random.Random(42)
     soil_types = ["Clay", "Sandy", "Loam", "Silt", "Peat"]
@@ -60,12 +60,14 @@ def generate_50k_grids(db):
         
     db.bulk_save_objects(grid_objects)
     db.commit()
-    print("50,000 grids saved.")
+    print(f"{len(grid_objects)} grids saved.")
     
-    # Add predictions to a subset to save time in seeding
+    # Add predictions to a subset to save time and prevent Open-Meteo rate limits
     print("Generating predictions for a subset of grids...")
     pred_objects = []
-    for cell in grid_objects[:1000]: # Only seed predictions for the first 1000 to keep seed fast
+    import time
+    for cell in grid_objects[:40]: # Seed 40 grids (120 API calls) to stay under rate limits
+        time.sleep(0.1) # Be nice to the public API
         for window, days in [("1-day", 1), ("3-day", 3), ("7-day", 7)]:
             flood, drought, code = generate_prediction(cell.id, days)
             pred_objects.append(Prediction(
@@ -92,7 +94,7 @@ def run(reset: bool = False):
             print("Already seeded — skipping (pass reset=True to force).")
             return
 
-        generate_50k_grids(db)
+        generate_h3_grids(db)
 
         demo_users = [
             ("Amina H.", "+254700000213", "amina@example.org", "Kenya", "Viewer"),

@@ -107,7 +107,7 @@ class Prediction(Base):
     action_code = Column(String(10))  # GREEN | YELLOW | RED
     recommendation_text = Column(JSON)  # {"en": "...", "sw": "...", "am": "...", "so": "..."}
     window = Column(String(10))  # 1-day | 3-day | 7-day
-    predicted_at = Column(DateTime, default=datetime.utcnow)
+    predicted_at = Column(DateTime, primary_key=True, default=datetime.utcnow)
     valid_until = Column(DateTime)
     model_version = Column(String(20), default="v2.3.1")
 

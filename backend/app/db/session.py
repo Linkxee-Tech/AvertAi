@@ -37,15 +37,17 @@ def after_create(target, connection, **kw):
     if settings.DATABASE_URL.startswith("postgres"):
         from sqlalchemy import text
         try:
-            connection.execute(text("CREATE EXTENSION IF NOT EXISTS timescaledb;"))
+            with connection.begin_nested():
+                connection.execute(text("CREATE EXTENSION IF NOT EXISTS timescaledb;"))
         except Exception as exc:
             logger.warning("Skipping TimescaleDB extension setup: %s", exc)
             return
 
         try:
-            connection.execute(
-                text("SELECT create_hypertable('predictions', 'predicted_at', if_not_exists => TRUE);")
-            )
+            with connection.begin_nested():
+                connection.execute(
+                    text("SELECT create_hypertable('predictions', 'predicted_at', if_not_exists => TRUE);")
+                )
         except Exception as exc:
             logger.warning("Skipping predictions hypertable setup: %s", exc)
 

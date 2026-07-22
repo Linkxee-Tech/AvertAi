@@ -28,7 +28,17 @@ class Settings(BaseSettings):
         "null"
     ]
 
-    # --- Database ---
+    # --- Third-Party Integrations ---
+    AFRICAS_TALKING_API_KEY: str = ""
+    AFRICAS_TALKING_USERNAME: str = "sandbox"
+    AFRICAS_TALKING_SENDER_ID: str = ""
+    GOOGLE_APPLICATION_CREDENTIALS: str = "" # JSON string or path
+    GCP_PROJECT_ID: str = ""
+    GCP_REGION: str = "us-central1"
+    TWILIO_ACCOUNT_SID: str = ""
+    TWILIO_AUTH_TOKEN: str = ""
+    TWILIO_FROM_NUMBER: str = ""
+
     # Local dev default: SQLite file. Production: postgresql+psycopg2://user:pass@host:5432/avertai
     # with PostGIS + TimescaleDB extensions enabled on the DigitalOcean managed cluster.
     DATABASE_URL: str = "sqlite:///./avertai.db"

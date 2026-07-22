@@ -50,3 +50,21 @@ def _check_redis() -> bool:
         return r.ping()
     except Exception:
         return False
+@router.post("/train")
+def trigger_ml_training(job_name: str = "avertai-xgb-retrain", image_uri: str = "gcr.io/avertai/training-image:latest"):
+    "\""Trigger Vertex AI custom training job."\""
+    if not settings.GCP_PROJECT_ID:
+        return {"status": "mocked", "message": "GCP_PROJECT_ID not configured. Mocking Vertex AI training dispatch.", "job_name": job_name}
+    
+    try:
+        from google.cloud import aiplatform
+        aiplatform.init(project=settings.GCP_PROJECT_ID, location=settings.GCP_REGION)
+        job = aiplatform.CustomContainerTrainingJob(
+            display_name=job_name,
+            container_uri=image_uri,
+        )
+        # We use sync=False so this doesn't block the HTTP request
+        model = job.run(sync=False)
+        return {"status": "submitted", "job_name": job_name, "state": str(job.state)}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Vertex AI Training Failed: {str(exc)}")

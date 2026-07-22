@@ -59,7 +59,7 @@ class User(Base):
     region = Column(String(80))
     language = Column(String(8), default="en")
     fcm_token = Column(String(255))
-    role = Column(String(20), default="Viewer")  # SuperAdmin | Moderator | Viewer
+    role = Column(String(20), default="user")  # super_admin | admin | user
     status = Column(String(20), default="Active")  # Active | Blocked
     notif_push = Column(Boolean, default=True)
     notif_sms = Column(Boolean, default=True)

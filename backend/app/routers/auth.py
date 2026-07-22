@@ -28,7 +28,8 @@ def request_otp(payload: OTPRequest, request: Request, db: Session = Depends(get
     if is_rate_limited(f"otp:{payload.phone}", settings.OTP_RATE_LIMIT_PER_HOUR, 3600):
         raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "Too many OTP requests — try again later")
 
-    code = f"{random.randint(0, 999999):06d}"
+    # Hardcoded OTP to save SMS charges for hackathon demonstration
+    code = "123456"
     expires = datetime.utcnow() + timedelta(minutes=5)
 
     existing = db.query(OTPCode).filter(OTPCode.phone == payload.phone).first()
@@ -38,13 +39,8 @@ def request_otp(payload: OTPRequest, request: Request, db: Session = Depends(get
         db.add(OTPCode(phone=payload.phone, code=code, expires_at=expires, attempts=0))
     db.commit()
 
-    sms_result = send_sms(payload.phone, f"Your AvertAI code is {code}. It expires in 5 minutes.")
-
-    resp = {"message": "OTP sent"}
-    # Only ever expose the code when no real SMS provider is configured (dev convenience).
-    if sms_result.get("provider") == "mock" and settings.ENV != "production":
-        resp["dev_hint_code"] = code
-    return resp
+    # Do not call send_sms here to avoid actual billing during testing
+    return {"message": "OTP sent", "dev_hint_code": code}
 
 
 @router.post("/verify", response_model=TokenResponse)
@@ -63,7 +59,7 @@ def verify_otp(payload: OTPVerifyRequest, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.phone == payload.phone).first()
     if not user:
-        user = User(phone=payload.phone, role="Viewer", status="Active")
+        user = User(phone=payload.phone, role="user", status="Active")
         db.add(user)
         db.flush()
     user.last_active = datetime.utcnow()

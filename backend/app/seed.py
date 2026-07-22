@@ -97,12 +97,12 @@ def run(reset: bool = False):
         generate_h3_grids(db)
 
         demo_users = [
-            ("Amina H.", "+254700000213", "amina@example.org", "Kenya", "Viewer"),
-            ("Kato O.", "+256700000441", "kato@example.org", "Uganda", "Moderator"),
-            ("Fatuma A.", "+251900000087", "fatuma@example.org", "Ethiopia", "Viewer"),
-            ("Deeqa M.", "+252600000311", "deeqa@example.org", "Somalia", "Moderator"),
-            ("James K.", "ops@avertai.org".replace("ops", "+254700000940"), "ops@avertai.org", "Kenya", "SuperAdmin"),
-            ("Nyaboke S.", "+254700000558", "nyaboke@example.org", "Kenya", "Viewer"),
+            ("Amina H.", "+254700000213", "amina@example.org", "Kenya", "user"),
+            ("Kato O.", "+256700000441", "kato@example.org", "Uganda", "admin"),
+            ("Fatuma A.", "+251900000087", "fatuma@example.org", "Ethiopia", "user"),
+            ("Deeqa M.", "+252600000311", "deeqa@example.org", "Somalia", "admin"),
+            ("James K.", "ops@avertai.org".replace("ops", "+254700000940"), "ops@avertai.org", "Kenya", "super_admin"),
+            ("Nyaboke S.", "+254700000558", "nyaboke@example.org", "Kenya", "user"),
         ]
         for name, phone, email, region, role in demo_users:
             db.add(User(

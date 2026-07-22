@@ -867,7 +867,10 @@
 // If the backend isn't reachable, the console runs in DEMO_MODE against the
 // same in-memory mock data it always has — nothing breaks, but nothing is live.
 // =====================================================================================
-const API_BASE = (window.AVERTAI_API_BASE) || 'http://localhost:8000/api/v1';
+// PRODUCTION NOTE: Replace the URL below with your actual Render backend URL!
+// e.g. 'https://avertai-backend.onrender.com/api/v1'
+// =====================================================================================
+const API_BASE = (window.AVERTAI_API_BASE) || 'https://YOUR-RENDER-APP.onrender.com/api/v1';
 let DEMO_MODE = true;
 let accessToken = null;   // admin dashboard JWT (email+password+2FA)
 let mobileAccessToken = null; // mobile app JWT (phone+OTP) — separate token, separate login flow

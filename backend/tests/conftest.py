@@ -13,7 +13,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, StaticPool
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 from fastapi.testclient import TestClient
 
 os.environ.setdefault("SECRET_KEY", "test-secret-key")

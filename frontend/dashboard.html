@@ -1415,15 +1415,25 @@ alerts.forEach(a=>{
   el.innerHTML=`<div class="alert-top"><span class="badge ${a.code}">${a.code}</span><span class="alert-loc">${a.loc}</span></div>
   <div class="alert-text">${a.text}</div>
   <div class="alert-meta"><span>Window: ${a.window}</span><span>Confidence: ${a.conf}</span>
-  <button class="btn-sm" style="border:none; padding:2px; font-size:12px; cursor:pointer;" onclick="speakAlert('${a.text.replace(/'/g, "\\'")}')">🔊 Listen</button>
+  <button class="btn-sm" style="border:none; padding:2px; font-size:12px; cursor:pointer;" onclick="speakAlert('${a.text.replace(/'/g, "\\'")}', this)">🔊 Listen</button>
   </div>`;
   feedList.appendChild(el); 
 });
 
-function speakAlert(text) {
+function speakAlert(text, btnElement) {
   if ('speechSynthesis' in window) {
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      if (btnElement) btnElement.textContent = '🔊 Listen';
+      return;
+    }
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.9; // Slightly slower for clarity
+    if (btnElement) {
+      btnElement.textContent = '⏸ Stop';
+      utterance.onend = () => btnElement.textContent = '🔊 Listen';
+      utterance.onerror = () => btnElement.textContent = '🔊 Listen';
+    }
     window.speechSynthesis.speak(utterance);
   } else {
     alert("Text-to-speech is not supported in this browser.");
@@ -1977,10 +1987,17 @@ function renderMobileScreens(){
   document.getElementById('mListenBtn').addEventListener('click', (e)=>{
     const txt = document.querySelector('#mActionBadge .txt').textContent;
     if(!('speechSynthesis' in window)){ e.target.textContent='🔇 TTS not supported'; setTimeout(()=> e.target.textContent='🔊 Listen', 1500); return; }
+    
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      e.target.textContent = '🔊 Listen';
+      return;
+    }
+
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(txt);
     utter.rate = 0.95;
-    e.target.textContent = '⏸ Playing…';
+    e.target.textContent = '⏸ Stop';
     utter.onend = ()=> e.target.textContent = '🔊 Listen';
     utter.onerror = ()=> e.target.textContent = '🔊 Listen';
     window.speechSynthesis.speak(utter);

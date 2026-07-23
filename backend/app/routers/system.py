@@ -52,7 +52,7 @@ def _check_redis() -> bool:
         return False
 @router.post("/train")
 def trigger_ml_training(job_name: str = "avertai-xgb-retrain", image_uri: str = "gcr.io/avertai/training-image:latest"):
-    "\""Trigger Vertex AI custom training job."\""
+    """Trigger Vertex AI custom training job."""
     if not settings.GCP_PROJECT_ID:
         return {"status": "mocked", "message": "GCP_PROJECT_ID not configured. Mocking Vertex AI training dispatch.", "job_name": job_name}
     

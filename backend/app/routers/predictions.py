@@ -121,6 +121,6 @@ def get_prediction_history(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user)
 ):
-    "\""Returns user's personal alert history."\""
+    """Returns user's personal alert history."""
     alerts = db.query(Alert).filter(Alert.user_id == user.id).order_by(Alert.created_at.desc()).limit(limit).all()
     return alerts

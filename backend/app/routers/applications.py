@@ -2,7 +2,7 @@ import random
 from typing import List
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
@@ -20,7 +20,7 @@ class ApplicationCreate(BaseModel):
     website: str
     admin_name: str
     admin_title: str
-    email: EmailStr
+    email: str
     phone: str
     purpose: str
 

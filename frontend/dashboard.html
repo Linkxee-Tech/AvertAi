@@ -1420,24 +1420,42 @@ alerts.forEach(a=>{
   feedList.appendChild(el); 
 });
 
+let currentTTSButton = null;
+
 function speakAlert(text, btnElement) {
-  if ('speechSynthesis' in window) {
-    if (window.speechSynthesis.speaking) {
-      window.speechSynthesis.cancel();
-      if (btnElement) btnElement.textContent = '🔊 Listen';
+  if (!('speechSynthesis' in window)) {
+    alert("Text-to-speech is not supported in this browser.");
+    return;
+  }
+  
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    if (currentTTSButton) currentTTSButton.textContent = '🔊 Listen';
+    
+    // If they clicked the same button that was playing, we just stop.
+    if (currentTTSButton === btnElement) {
+      currentTTSButton = null;
       return;
     }
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.9; // Slightly slower for clarity
-    if (btnElement) {
-      btnElement.textContent = '⏸ Stop';
-      utterance.onend = () => btnElement.textContent = '🔊 Listen';
-      utterance.onerror = () => btnElement.textContent = '🔊 Listen';
-    }
-    window.speechSynthesis.speak(utterance);
-  } else {
-    alert("Text-to-speech is not supported in this browser.");
   }
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 0.9;
+  
+  currentTTSButton = btnElement;
+  if (btnElement) {
+    btnElement.textContent = '⏸ Stop';
+    utterance.onend = () => {
+      if (currentTTSButton === btnElement) currentTTSButton = null;
+      btnElement.textContent = '🔊 Listen';
+    };
+    utterance.onerror = () => {
+      if (currentTTSButton === btnElement) currentTTSButton = null;
+      btnElement.textContent = '🔊 Listen';
+    };
+  }
+  
+  window.speechSynthesis.speak(utterance);
 }
 
 // ---------------- BROADCAST CENTER ----------------

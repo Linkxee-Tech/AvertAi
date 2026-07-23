@@ -107,12 +107,12 @@ def dashboard_login(payload: DashboardLoginRequest, db: Session = Depends(get_db
     }
 @router.post("/admin/invite")
 def admin_invite(email: str, db: Session = Depends(get_db), user: User = Depends(require_roles("SuperAdmin"))):
-    "\""Invite a new admin user."\""
+    """Invite a new admin user."""
     # Placeholder implementation
     return {"status": "success", "message": f"Invitation sent to {email}"}
 @router.post("/forgot-password")
 def forgot_password(payload: ForgotPasswordRequest, db: Session = Depends(get_db)):
-    "\""Sends a password reset email via Firebase Auth (mocked if no SDK)."\""
+    """Sends a password reset email via Firebase Auth (mocked if no SDK)."""
     user = db.query(User).filter(User.email == payload.email).first()
     if not user:
         # Don't leak user existence

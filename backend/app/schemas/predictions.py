@@ -61,3 +61,9 @@ class MosaicCell(BaseModel):
 class MosaicResponse(BaseModel):
     window: str
     cells: List[MosaicCell]
+class AlertResponse(BaseModel):
+    id: str
+    message: str
+    action_code: str
+    is_read: bool
+    created_at: datetime

@@ -182,3 +182,12 @@ class OrganizationApplication(Base):
     purpose = Column(Text)
     status = Column(String(20), default="Pending")  # Pending | Approved | Rejected
     created_at = Column(DateTime, default=datetime.utcnow)
+class Alert(Base):
+    __tablename__ = "alerts"
+
+    id = Column(String, primary_key=True, default=gen_uuid)
+    user_id = Column(String, ForeignKey("users.id"))
+    message = Column(Text)
+    action_code = Column(String(50)) # GREEN, YELLOW, RED
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)

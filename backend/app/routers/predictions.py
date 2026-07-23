@@ -1,4 +1,5 @@
 import json
+from typing import List
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -6,13 +7,14 @@ from sqlalchemy.orm import Session
 import redis
 
 from app.db.session import get_db
-from app.db.models import GridCell, Prediction
+from app.db.models import GridCell, Prediction, Alert, User
+from app.core.deps import get_current_user
 from app.core.config import get_settings
 from app.services.ml_service import generate_prediction, action_text_for
 from app.services.geo_utils import haversine_km
 from app.schemas.predictions import (
     CurrentPrediction, WeekPrediction, DayForecast,
-    GridHistoryResponse, GridHistoryPoint, MosaicResponse, MosaicCell,
+    GridHistoryResponse, GridHistoryPoint, MosaicResponse, MosaicCell, AlertResponse
 )
 
 router = APIRouter(prefix="/predict", tags=["predictions"])
@@ -113,3 +115,12 @@ def predict_mosaic(window: str = Query("3-day"), db: Session = Depends(get_db)):
             "flood_prob": flood, "drought_prob": drought, "action_code": code,
         })
     return {"window": window, "cells": result}
+@router.get("/history", response_model=List[AlertResponse])
+def get_prediction_history(
+    limit: int = 20,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    "\""Returns user's personal alert history."\""
+    alerts = db.query(Alert).filter(Alert.user_id == user.id).order_by(Alert.created_at.desc()).limit(limit).all()
+    return alerts

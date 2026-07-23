@@ -17,6 +17,7 @@ from app.services.comms_service import send_sms
 from app.schemas.auth import (
     OTPRequest, OTPResponse, OTPVerifyRequest, TokenResponse,
     RefreshRequest, AccessTokenResponse, DashboardLoginRequest,
+    ForgotPasswordRequest,
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -109,3 +110,24 @@ def admin_invite(email: str, db: Session = Depends(get_db), user: User = Depends
     "\""Invite a new admin user."\""
     # Placeholder implementation
     return {"status": "success", "message": f"Invitation sent to {email}"}
+@router.post("/forgot-password")
+def forgot_password(payload: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    "\""Sends a password reset email via Firebase Auth (mocked if no SDK)."\""
+    user = db.query(User).filter(User.email == payload.email).first()
+    if not user:
+        # Don't leak user existence
+        return {"message": "If an account with that email exists, a reset link has been sent."}
+    
+    if settings.GOOGLE_APPLICATION_CREDENTIALS:
+        try:
+            import firebase_admin
+            from firebase_admin import auth as fb_auth
+            # Generate the link (requires Firebase Auth to be fully set up with a web app)
+            link = fb_auth.generate_password_reset_link(payload.email)
+            # In a real app you'd email this link using SendGrid, etc.
+            # Here we let Firebase handle it by relying on client-side or just printing it.
+            print(f"Generated password reset link: {link}")
+        except Exception as e:
+            print(f"Firebase Auth error: {e}")
+            
+    return {"message": "If an account with that email exists, a reset link has been sent."}

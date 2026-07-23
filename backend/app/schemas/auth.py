@@ -35,3 +35,5 @@ class DashboardLoginRequest(BaseModel):
     email: str
     password: str
     totp_code: Optional[str] = None  # 2FA authenticator code, required on the login call once password is verified
+class ForgotPasswordRequest(BaseModel):
+    email: str = Field(..., examples=["admin@example.com"])

@@ -6,116 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
-  mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
-
-  function renderMapbox() {
-      if(!cellData || !cellData.length) return;
-      
-      const geojson = {
-          type: 'FeatureCollection',
-          features: cellData.map(c => ({
-              type: 'Feature',
-              geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
-              properties: { 
-                  id: c.grid_id, 
-                  color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450'), 
-                  village: c.village_name 
-              }
-          }))
-      };
-
-      if (!mapExplorer && document.getElementById('mosaic')) {
-          document.getElementById('mosaic').innerHTML = '';
-          mapExplorer = new mapboxgl.Map({
-              container: 'mosaic',
-              style: 'mapbox://styles/mapbox/dark-v11',
-              center: [39.0, 5.0], // Center on IGAD
-              zoom: 4.5
-          });
-          
-          mapExplorer.on('load', () => {
-              mapExplorer.addSource('grids', { type: 'geojson', data: geojson });
-              mapExplorer.addLayer({
-                  id: 'grids-layer',
-                  type: 'circle',
-                  source: 'grids',
-                  paint: {
-                      'circle-radius': 5,
-                      'circle-color': ['get', 'color'],
-                      'circle-opacity': 0.8
-                  }
-              });
-              
-              mapExplorer.on('click', 'grids-layer', (e) => {
-                  const props = e.features[0].properties;
-                  const idx = cellData.findIndex(c => c.grid_id === props.id);
-                  if (idx >= 0) showCell(idx, props.color === '#C1453D' ? 'r' : (props.color === '#D9A441' ? 'y' : 'g'));
-              });
-              mapExplorer.on('mouseenter', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = 'pointer');
-              mapExplorer.on('mouseleave', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = '');
-          });
-      } else if (mapExplorer && mapExplorer.getSource('grids')) {
-          mapExplorer.getSource('grids').setData(geojson);
-      }
-  }
-
-</script>
-<script src='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js'>
-  mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
-
-  function renderMapbox() {
-      if(!cellData || !cellData.length) return;
-      
-      const geojson = {
-          type: 'FeatureCollection',
-          features: cellData.map(c => ({
-              type: 'Feature',
-              geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
-              properties: { 
-                  id: c.grid_id, 
-                  color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450'), 
-                  village: c.village_name 
-              }
-          }))
-      };
-
-      if (!mapExplorer && document.getElementById('mosaic')) {
-          document.getElementById('mosaic').innerHTML = '';
-          mapExplorer = new mapboxgl.Map({
-              container: 'mosaic',
-              style: 'mapbox://styles/mapbox/dark-v11',
-              center: [39.0, 5.0], // Center on IGAD
-              zoom: 4.5
-          });
-          
-          mapExplorer.on('load', () => {
-              mapExplorer.addSource('grids', { type: 'geojson', data: geojson });
-              mapExplorer.addLayer({
-                  id: 'grids-layer',
-                  type: 'circle',
-                  source: 'grids',
-                  paint: {
-                      'circle-radius': 5,
-                      'circle-color': ['get', 'color'],
-                      'circle-opacity': 0.8
-                  }
-              });
-              
-              mapExplorer.on('click', 'grids-layer', (e) => {
-                  const props = e.features[0].properties;
-                  const idx = cellData.findIndex(c => c.grid_id === props.id);
-                  if (idx >= 0) showCell(idx, props.color === '#C1453D' ? 'r' : (props.color === '#D9A441' ? 'y' : 'g'));
-              });
-              mapExplorer.on('mouseenter', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = 'pointer');
-              mapExplorer.on('mouseleave', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = '');
-          });
-      } else if (mapExplorer && mapExplorer.getSource('grids')) {
-          mapExplorer.getSource('grids').setData(geojson);
-      }
-  }
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js'></script>
 <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css' rel='stylesheet' />
 <style>
   :root{
@@ -908,7 +800,61 @@
 // PRODUCTION NOTE: Replace the URL below with your actual Render backend URL!
 // e.g. 'https://avertai-backend.onrender.com/api/v1'
 // =====================================================================================
-const API_BASE = (window.AVERTAI_API_BASE) || 'https://YOUR-RENDER-APP.onrender.com/api/v1';
+const API_BASE = (window.AVERTAI_API_BASE) || 'http://127.0.0.1:8000/api/v1';
+
+// ---------------- MAPBOX SETUP ----------------
+mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
+
+function renderMapbox() {
+    if(!cellData || !cellData.length) return;
+    
+    const geojson = {
+        type: 'FeatureCollection',
+        features: cellData.map(c => ({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
+            properties: { 
+                id: c.grid_id, 
+                color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450'), 
+                village: c.village_name 
+            }
+        }))
+    };
+
+    if (!mapExplorer && document.getElementById('mosaic')) {
+        document.getElementById('mosaic').innerHTML = '';
+        mapExplorer = new mapboxgl.Map({
+            container: 'mosaic',
+            style: 'mapbox://styles/mapbox/dark-v11',
+            center: [39.0, 5.0], // Center on IGAD
+            zoom: 4.5
+        });
+        
+        mapExplorer.on('load', () => {
+            mapExplorer.addSource('grids', { type: 'geojson', data: geojson });
+            mapExplorer.addLayer({
+                id: 'grids-layer',
+                type: 'circle',
+                source: 'grids',
+                paint: {
+                    'circle-radius': 5,
+                    'circle-color': ['get', 'color'],
+                    'circle-opacity': 0.8
+                }
+            });
+            
+            mapExplorer.on('click', 'grids-layer', (e) => {
+                const props = e.features[0].properties;
+                const idx = cellData.findIndex(c => c.grid_id === props.id);
+                if (idx >= 0) showCell(idx, props.color === '#C1453D' ? 'r' : (props.color === '#D9A441' ? 'y' : 'g'));
+            });
+            mapExplorer.on('mouseenter', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = 'pointer');
+            mapExplorer.on('mouseleave', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = '');
+        });
+    } else if (mapExplorer && mapExplorer.getSource('grids')) {
+        mapExplorer.getSource('grids').setData(geojson);
+    }
+}
 let DEMO_MODE = true;
 let accessToken = null;   // admin dashboard JWT (email+password+2FA)
 let mobileAccessToken = null; // mobile app JWT (phone+OTP) — separate token, separate login flow
@@ -1121,6 +1067,11 @@ document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
     if(item.dataset.page === 'users'){ if(await loadUsersFromAPI()) renderUsers(currentUserFilter); }
     if(item.dataset.page === 'applications'){ loadApplicationsFromAPI(); }
     if(item.dataset.page === 'broadcast'){ if(await loadBroadcastHistoryFromAPI()) renderBroadcastHistory(); }
+    if(item.dataset.page === 'predexplorer'){ 
+      if (typeof mapExplorer !== 'undefined' && mapExplorer) { 
+        setTimeout(() => mapExplorer.resize(), 50); 
+      }
+    }
   });
 });
 
@@ -1230,8 +1181,8 @@ async function loadGridsFromAPI(windowLabel){
     data.cells.slice(0, n).forEach((c, i) => { newStates[i] = codeToClass[c.action_code] || 'g'; newIds[i] = c.grid_id; });
     cellStates = newStates; cellGridIds = newIds; baseCellStates = cellStates.slice();
     cellData = data.cells || [];
-      renderMapbox();
-      renderMosaic(document.getElementById('mosaic'), cellStates, true);
+    renderMapbox();
+    // Do NOT render the 2D canvas over the mosaic map if Mapbox is handling it.
     renderMosaic(document.getElementById('miniMosaic'), cellStates.slice(0,64), false);
     renderMosaic(document.getElementById('mMiniMosaic') || document.createElement('div'), cellStates.slice(0,64), false);
     return true;
@@ -1366,7 +1317,10 @@ document.getElementById('windowToggle').addEventListener('click', async (e)=>{
   document.querySelectorAll('#windowToggle button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active'); document.getElementById('windowLabel').textContent = btn.dataset.w;
   const ok = await loadGridsFromAPI(btn.dataset.w);
-  if(!ok){ cellStates = buildCellStates(50000); baseCellStates = cellStates.slice(); renderMosaic(document.getElementById('mosaic'), cellStates, true); }
+  if(!ok){ 
+    cellStates = buildCellStates(50000); baseCellStates = cellStates.slice(); 
+    renderMapbox();
+  }
 });
 // What-if simulator: shifts grid risk distribution based on a simulated rainfall adjustment
 function applyRainfallShift(pct){
@@ -1376,7 +1330,12 @@ function applyRainfallShift(pct){
     return r < 0.12 ? 'r' : r < 0.34 ? 'y' : 'g';
   });
   cellStates = shifted;
-  renderMosaic(document.getElementById('mosaic'), cellStates, true);
+  if(cellData && cellData.length) {
+    cellData.forEach((c, i) => { 
+      c.action_code = cellStates[i] === 'r' ? 'RED' : (cellStates[i] === 'y' ? 'YELLOW' : 'GREEN'); 
+    });
+    renderMapbox();
+  }
 }
 document.getElementById('rainfallSlider').addEventListener('input', (e)=>{
   const pct = parseInt(e.target.value);
@@ -1387,7 +1346,12 @@ document.getElementById('rainfallReset').addEventListener('click', ()=>{
   document.getElementById('rainfallSlider').value = 0;
   document.getElementById('rainfallValue').textContent = '+0%';
   cellStates = baseCellStates.slice();
-  renderMosaic(document.getElementById('mosaic'), cellStates, true);
+  if(cellData && cellData.length) {
+    cellData.forEach((c, i) => { 
+      c.action_code = cellStates[i] === 'r' ? 'RED' : (cellStates[i] === 'y' ? 'YELLOW' : 'GREEN'); 
+    });
+    renderMapbox();
+  }
 });
 document.getElementById('villageSearch').addEventListener('input', (e)=>{
   const q=e.target.value.toLowerCase();
@@ -1446,9 +1410,25 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
   }
 });
 const feedList = document.getElementById('feedList');
-alerts.forEach(a=>{ const el=document.createElement('div'); el.className='alert-card '+a.code; el.dataset.loc=a.loc;
-  el.innerHTML=`<div class="alert-top"><span class="badge ${a.code}">${a.code}</span><span class="alert-loc">${a.loc}</span></div><div class="alert-text">${a.text}</div><div class="alert-meta"><span>Window: ${a.window}</span><span>Confidence: ${a.conf}</span></div>`;
-  feedList.appendChild(el); });
+alerts.forEach(a=>{ 
+  const el=document.createElement('div'); el.className='alert-card '+a.code; el.dataset.loc=a.loc;
+  el.innerHTML=`<div class="alert-top"><span class="badge ${a.code}">${a.code}</span><span class="alert-loc">${a.loc}</span></div>
+  <div class="alert-text">${a.text}</div>
+  <div class="alert-meta"><span>Window: ${a.window}</span><span>Confidence: ${a.conf}</span>
+  <button class="btn-sm" style="border:none; padding:2px; font-size:12px; cursor:pointer;" onclick="speakAlert('${a.text.replace(/'/g, "\\'")}')">🔊 Listen</button>
+  </div>`;
+  feedList.appendChild(el); 
+});
+
+function speakAlert(text) {
+  if ('speechSynthesis' in window) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.9; // Slightly slower for clarity
+    window.speechSynthesis.speak(utterance);
+  } else {
+    alert("Text-to-speech is not supported in this browser.");
+  }
+}
 
 // ---------------- BROADCAST CENTER ----------------
 const TOTAL_AUDIENCE = 4812;
@@ -1807,16 +1787,40 @@ document.getElementById('userFilterRow').addEventListener('click', (e)=>{
   };
 
   // ---------------- SYSTEM LOGS ----------------
-const sysLogs = [
-  {t:'09:41:02', svc:'fastapi-api', status:'ok', msg:'Health check passed — DB, Redis, GCP all reachable'},
-  {t:'09:22:15', svc:'celery-worker', status:'ok', msg:'Batch SMS job completed — 1,204 sent'},
-  {t:'08:55:40', svc:'vertex-ai', status:'warn', msg:'Retrain job queued — waiting on preemptible instance'},
-  {t:'08:10:03', svc:'africas-talking', status:'error', msg:'Voice call webhook timeout — retried successfully'},
-  {t:'07:44:51', svc:'redis-cache', status:'ok', msg:'Cache hit ratio 92% over last hour'},
-  {t:'06:30:00', svc:'postgis-db', status:'ok', msg:'Nightly backup completed — point-in-time recovery ready'},
-];
-document.getElementById('logsTableBody').innerHTML = sysLogs.map(l=>`<tr><td class="mono">${l.t}</td><td class="mono">${l.svc}</td>
-  <td><span class="dot ${l.status==='ok'?'':l.status==='warn'?'busy':'err'}"></span></td><td>${l.msg}</td></tr>`).join('');
+  const sysLogs = [
+    {t:'09:41:02', svc:'fastapi-api', status:'ok', msg:'Health check passed – DB, Redis, GCP all reachable'},
+    {t:'09:22:15', svc:'celery-worker', status:'ok', msg:'Batch SMS job completed – 1,204 sent'},
+    {t:'08:55:40', svc:'vertex-ai', status:'warn', msg:'Retrain job queued – waiting on preemptible instance'},
+    {t:'08:10:03', svc:'africas-talking', status:'error', msg:'Voice call webhook timeout – retried successfully'},
+    {t:'07:44:51', svc:'redis-cache', status:'ok', msg:'Cache hit ratio 92% over last hour'},
+    {t:'06:30:00', svc:'postgis-db', status:'ok', msg:'Nightly backup completed – point-in-time recovery ready'},
+  ];
+
+  function renderLogs() {
+    document.getElementById('logsTableBody').innerHTML = sysLogs.map(l=>`<tr><td class="mono">${l.t}</td><td class="mono">${l.svc}</td>
+    <td><span class="dot ${l.status==='ok'?'':l.status==='warn'?'busy':'err'}"></span></td><td>${l.msg}</td></tr>`).join('');
+  }
+  renderLogs();
+
+  const dynamicLogEvents = [
+    {svc:'open-meteo', status:'ok', msg:'Open-Meteo weather inflow fetched successfully for IGAD region.'},
+    {svc:'ecmwf-pipeline', status:'ok', msg:'Active ECMWF 7-day forecast processed.'},
+    {svc:'sentinel-2', status:'ok', msg:'Sentinel-2 (NDVI) satellite imagery fetched and parsed.'},
+    {svc:'chirps-climate', status:'ok', msg:'CHIRPS daily rainfall dataset ingested.'},
+    {svc:'xgboost-trainer', status:'warn', msg:'XGBoost Trainer runs calculating feature importance...'},
+    {svc:'lstm-trainer', status:'ok', msg:'LSTM Trainer runs completed on local time-series data.'},
+    {svc:'rlhf-scorer', status:'ok', msg:'RLHF Reward Scorer calculating reward score weekly...'}
+  ];
+
+  setInterval(() => {
+    if (Math.random() > 0.4) return;
+    const ev = dynamicLogEvents[Math.floor(Math.random() * dynamicLogEvents.length)];
+    const now = new Date();
+    const t = now.toTimeString().split(' ')[0];
+    sysLogs.unshift({t, svc:ev.svc, status:ev.status, msg:ev.msg});
+    if (sysLogs.length > 15) sysLogs.pop();
+    renderLogs();
+  }, 4000);
 
 // ---------------- MOBILE APP (8 screens) ----------------
 const screens = [
@@ -2127,58 +2131,7 @@ tick(); setInterval(tick, 1000);
 checkBackendReachable();
 setInterval(checkBackendReachable, 15000); // keep the status chip honest if the backend starts/stops later
 
-  mapboxgl.accessToken = 'pk.eyJ1IjoibGlua3hlZSIsImEiOiJjbXJsOXYzc3QyaDBjMnlzZXZ4aHgyNHdoIn0.LBjJ6wzbi73DEtoQH1ykbA';
 
-  function renderMapbox() {
-      if(!cellData || !cellData.length) return;
-      
-      const geojson = {
-          type: 'FeatureCollection',
-          features: cellData.map(c => ({
-              type: 'Feature',
-              geometry: { type: 'Point', coordinates: [c.lon, c.lat] },
-              properties: { 
-                  id: c.grid_id, 
-                  color: c.action_code === 'RED' ? '#C1453D' : (c.action_code === 'YELLOW' ? '#D9A441' : '#6E9450'), 
-                  village: c.village_name 
-              }
-          }))
-      };
-
-      if (!mapExplorer && document.getElementById('mosaic')) {
-          document.getElementById('mosaic').innerHTML = '';
-          mapExplorer = new mapboxgl.Map({
-              container: 'mosaic',
-              style: 'mapbox://styles/mapbox/dark-v11',
-              center: [39.0, 5.0], // Center on IGAD
-              zoom: 4.5
-          });
-          
-          mapExplorer.on('load', () => {
-              mapExplorer.addSource('grids', { type: 'geojson', data: geojson });
-              mapExplorer.addLayer({
-                  id: 'grids-layer',
-                  type: 'circle',
-                  source: 'grids',
-                  paint: {
-                      'circle-radius': 5,
-                      'circle-color': ['get', 'color'],
-                      'circle-opacity': 0.8
-                  }
-              });
-              
-              mapExplorer.on('click', 'grids-layer', (e) => {
-                  const props = e.features[0].properties;
-                  const idx = cellData.findIndex(c => c.grid_id === props.id);
-                  if (idx >= 0) showCell(idx, props.color === '#C1453D' ? 'r' : (props.color === '#D9A441' ? 'y' : 'g'));
-              });
-              mapExplorer.on('mouseenter', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = 'pointer');
-              mapExplorer.on('mouseleave', 'grids-layer', () => mapExplorer.getCanvas().style.cursor = '');
-          });
-      } else if (mapExplorer && mapExplorer.getSource('grids')) {
-          mapExplorer.getSource('grids').setData(geojson);
-      }
-  }
 
 </script>
 </body>

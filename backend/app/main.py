@@ -88,6 +88,16 @@ def on_startup():
             # Temporarily rename `reset` arg if needed, but run() by default does not drop all
             # It just creates and fills if empty.
             seed_run()
+            
+        # Hardcode fallback for Amina
+        if db.query(User).filter(User.email == "amina@example.org").count() == 0:
+            from app.core.security import hash_password
+            db.add(User(
+                name="Amina H.", phone="+254700000213", email="amina@example.org", 
+                region="Kenya", role="super_admin", status="Active", 
+                password_hash=hash_password("AvertAI2026!")
+            ))
+            db.commit()
     finally:
         db.close()
 

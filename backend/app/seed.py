@@ -90,59 +90,62 @@ def run(reset: bool = False):
 
     db = SessionLocal()
     try:
-        if db.query(GridCell).count() > 0:
+        from app.db.models import User
+        if db.query(GridCell).count() > 0 and db.query(User).count() > 0:
             print("Already seeded — skipping (pass reset=True to force).")
             return
 
-        generate_h3_grids(db)
+        if db.query(GridCell).count() == 0:
+            generate_h3_grids(db)
 
-        demo_users = [
-            ("Amina H.", "+254700000213", "amina@example.org", "Kenya", "user"),
-            ("Kato O.", "+256700000441", "kato@example.org", "Uganda", "admin"),
-            ("Fatuma A.", "+251900000087", "fatuma@example.org", "Ethiopia", "user"),
-            ("Deeqa M.", "+252600000311", "deeqa@example.org", "Somalia", "admin"),
-            ("James K.", "ops@avertai.org".replace("ops", "+254700000940"), "ops@avertai.org", "Kenya", "super_admin"),
-            ("Nyaboke S.", "+254700000558", "nyaboke@example.org", "Kenya", "user"),
-        ]
-        for name, phone, email, region, role in demo_users:
-            db.add(User(
-                name=name, phone=phone, email=email, region=region, role=role,
-                status="Active", password_hash=hash_password("AvertAI2026!"),
+        if db.query(User).count() == 0:
+            demo_users = [
+                ("Amina H.", "+254700000213", "amina@example.org", "Kenya", "user"),
+                ("Kato O.", "+256700000441", "kato@example.org", "Uganda", "admin"),
+                ("Fatuma A.", "+251900000087", "fatuma@example.org", "Ethiopia", "user"),
+                ("Deeqa M.", "+252600000311", "deeqa@example.org", "Somalia", "admin"),
+                ("James K.", "ops@avertai.org".replace("ops", "+254700000940"), "ops@avertai.org", "Kenya", "super_admin"),
+                ("Nyaboke S.", "+254700000558", "nyaboke@example.org", "Kenya", "user"),
+            ]
+            for name, phone, email, region, role in demo_users:
+                db.add(User(
+                    name=name, phone=phone, email=email, region=region, role=role,
+                    status="Active", password_hash=hash_password("AvertAI2026!"),
+                ))
+
+            demo_feedback = [
+                ("FLOOD", "+254700000213", "2.5km North of Wajir town - water rising near school", "flood_sighting", 0.92, "Pending"),
+                ("CROP", "+251900000087", "OK - sorghum field near Moyale unaffected", "crop_status_ok", 0.87, "Verified"),
+                ("DROUGHT", "+254700000940", "Severe - Turkana Basin, borehole dry since Tuesday", "drought_severe", 0.95, "Pending"),
+                ("FLOOD", "+252600000311", "Bridge submerged near Dolo Ado crossing", "flood_sighting", 0.90, "Verified"),
+                ("CROP", "+252600000702", "Pest sighting - armyworm, Gedo maize plots", "crop_pest_report", 0.81, "Pending"),
+                ("DROUGHT", "+254700000558", "Pasture depleted, Marsabit north sector", "drought_severe", 0.63, "Spam"),
+            ]
+            for report_type, phone, text, intent, conf, status_val in demo_feedback:
+                v = VILLAGES[0]
+                db.add(Feedback(
+                    phone=phone, lat=v[3], lon=v[4], report_type=report_type,
+                    raw_text=text, parsed_intent=intent, confidence=conf, status=status_val,
+                    reference=f"RPT-2026-{random.randint(10000, 99999)}",
+                    verified_at=datetime.utcnow() if status_val != "Pending" else None,
+                ))
+
+            demo_resources = [
+                ("Water Truck — Unit 04", "Water", -0.4536, 39.6401, "4000L", "+254711000001", "Turkana Basin"),
+                ("Food Cache — Node 12", "Food", 3.5167, 39.0500, "6.2t maize", "+254711000002", "Dolo Ado"),
+                ("Medical Team — Alpha", "Medical", 1.7471, 40.0573, "n/a", "+254711000003", "Wajir"),
+            ]
+            for name, rtype, lat, lon, capacity, phone, zone in demo_resources:
+                db.add(Resource(name=name, type=rtype, lat=lat, lon=lon, capacity=capacity, contact_phone=phone, zone=zone))
+
+            db.add(Broadcast(
+                target_filter="risk_level:RED", message_text="Code RED: evacuate Dolo Ado low-lying zones now.",
+                channels="SMS,Push,Voice", sent_via_sms_count=1204, sent_via_push_count=3880, status="sent",
             ))
-
-        demo_feedback = [
-            ("FLOOD", "+254700000213", "2.5km North of Wajir town - water rising near school", "flood_sighting", 0.92, "Pending"),
-            ("CROP", "+251900000087", "OK - sorghum field near Moyale unaffected", "crop_status_ok", 0.87, "Verified"),
-            ("DROUGHT", "+254700000940", "Severe - Turkana Basin, borehole dry since Tuesday", "drought_severe", 0.95, "Pending"),
-            ("FLOOD", "+252600000311", "Bridge submerged near Dolo Ado crossing", "flood_sighting", 0.90, "Verified"),
-            ("CROP", "+252600000702", "Pest sighting - armyworm, Gedo maize plots", "crop_pest_report", 0.81, "Pending"),
-            ("DROUGHT", "+254700000558", "Pasture depleted, Marsabit north sector", "drought_severe", 0.63, "Spam"),
-        ]
-        for report_type, phone, text, intent, conf, status_val in demo_feedback:
-            v = VILLAGES[0]
-            db.add(Feedback(
-                phone=phone, lat=v[3], lon=v[4], report_type=report_type,
-                raw_text=text, parsed_intent=intent, confidence=conf, status=status_val,
-                reference=f"RPT-2026-{random.randint(10000, 99999)}",
-                verified_at=datetime.utcnow() if status_val != "Pending" else None,
+            db.add(Broadcast(
+                target_filter="region:Kenya", message_text="Code GREEN: planting window open in Moyale.",
+                channels="SMS,Push", sent_via_sms_count=640, sent_via_push_count=1920, status="sent",
             ))
-
-        demo_resources = [
-            ("Water Truck — Unit 04", "Water", -0.4536, 39.6401, "4000L", "+254711000001", "Turkana Basin"),
-            ("Food Cache — Node 12", "Food", 3.5167, 39.0500, "6.2t maize", "+254711000002", "Dolo Ado"),
-            ("Medical Team — Alpha", "Medical", 1.7471, 40.0573, "n/a", "+254711000003", "Wajir"),
-        ]
-        for name, rtype, lat, lon, capacity, phone, zone in demo_resources:
-            db.add(Resource(name=name, type=rtype, lat=lat, lon=lon, capacity=capacity, contact_phone=phone, zone=zone))
-
-        db.add(Broadcast(
-            target_filter="risk_level:RED", message_text="Code RED: evacuate Dolo Ado low-lying zones now.",
-            channels="SMS,Push,Voice", sent_via_sms_count=1204, sent_via_push_count=3880, status="sent",
-        ))
-        db.add(Broadcast(
-            target_filter="region:Kenya", message_text="Code GREEN: planting window open in Moyale.",
-            channels="SMS,Push", sent_via_sms_count=640, sent_via_push_count=1920, status="sent",
-        ))
 
         db.commit()
         print("Seed complete.")

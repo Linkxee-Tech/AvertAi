@@ -80,11 +80,13 @@ def on_startup():
     Base.metadata.create_all(bind=engine)
     # Auto-seed only if the table is empty, so repeated restarts don't duplicate data.
     from app.db.session import SessionLocal
-    from app.db.models import GridCell
+    from app.db.models import GridCell, User
     db = SessionLocal()
     try:
-        if db.query(GridCell).count() == 0:
+        if db.query(GridCell).count() == 0 or db.query(User).count() == 0:
             from app.seed import run as seed_run
+            # Temporarily rename `reset` arg if needed, but run() by default does not drop all
+            # It just creates and fills if empty.
             seed_run()
     finally:
         db.close()

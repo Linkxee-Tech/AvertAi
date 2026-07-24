@@ -505,7 +505,7 @@
               </div>
               <div class="grid-wrap"><div class="mosaic" id="mosaic"></div></div>
               <div class="map-footnote">
-                <span>128 grid cells · 5km resolution · window: <b id="windowLabel" style="color:var(--sand)">3-day</b></span>
+                <span id="cellCountText">128 grid cells · 5km resolution · window: <b id="windowLabel" style="color:var(--sand)">3-day</b></span>
                 <span>Click a cell to inspect →</span>
               </div>
               <div class="cell-detail" id="cellDetail">Select a grid cell to see its historical-vs-predicted trend.</div>
@@ -1181,6 +1181,12 @@ async function loadGridsFromAPI(windowLabel){
     data.cells.slice(0, n).forEach((c, i) => { newStates[i] = codeToClass[c.action_code] || 'g'; newIds[i] = c.grid_id; });
     cellStates = newStates; cellGridIds = newIds; baseCellStates = cellStates.slice();
     cellData = data.cells || [];
+    
+    const countEl = document.getElementById('cellCountText');
+    if (countEl) {
+      countEl.innerHTML = `${n.toLocaleString()} grid cells &middot; 5km resolution &middot; window: <b id="windowLabel" style="color:var(--sand)">${windowLabel}</b>`;
+    }
+
     renderMapbox();
     // Do NOT render the 2D canvas over the mosaic map if Mapbox is handling it.
     renderMosaic(document.getElementById('miniMosaic'), cellStates.slice(0,64), false);
@@ -1288,10 +1294,10 @@ async function showCell(i, state){
   if(gridId){
     try{
       const detail = await apiFetch(`/predict/grid/${gridId}`);
-      const p = detail.predictions.find(p => p.window === document.getElementById('windowLabel').textContent) || detail.predictions[0];
+      const p = detail.history.find(p => p.window === document.getElementById('windowLabel').textContent) || detail.history[0];
       if(p){
         village = detail.village_name; flood = (p.flood_prob*100).toFixed(0); drought = (p.drought_prob*100).toFixed(0);
-        liveTag = ' <span class="mono" style="color:var(--teal); font-size:9px;">● LIVE FROM API</span>';
+        liveTag = ' <span class="mono" style="color:var(--teal); font-size:9px;">⚡ LIVE FROM API</span>';
       }
     } catch(err){ /* keep local fallback values */ }
   }

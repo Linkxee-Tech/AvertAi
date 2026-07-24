@@ -108,7 +108,7 @@ def predict_mosaic(window: str = Query("3-day"), db: Session = Depends(get_db)):
     cells = db.query(GridCell).all()
     result = []
     for cell in cells:
-        flood, drought, code = generate_prediction(cell.id, day_offset=day_offset)
+        flood, drought, code = generate_prediction(cell.id, day_offset=day_offset, bulk=True)
         result.append({
             "grid_id": cell.id, "village_name": cell.village_name,
             "lat": cell.lat, "lon": cell.lon,

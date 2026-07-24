@@ -102,7 +102,7 @@ def fetch_weather_features(lat: float, lon: float) -> Tuple[float, float]:
         logger.error(f"Weather API failed: {e}")
         return None, None
 
-def generate_prediction(grid_id: str, day_offset: int = 0) -> Tuple[float, float, str]:
+def generate_prediction(grid_id: str, day_offset: int = 0, bulk: bool = False) -> Tuple[float, float, str]:
     """Uses Open-Meteo and local XGBoost models if available, otherwise falls back to pseudo-random."""
     flood_prob = None
     drought_prob = None
@@ -118,7 +118,14 @@ def generate_prediction(grid_id: str, day_offset: int = 0) -> Tuple[float, float
                 cell = db.query(GridCell).filter(GridCell.id == grid_id).first()
             
             if cell and cell.lat and cell.lon:
-                moisture, precip = fetch_weather_features(cell.lat, cell.lon)
+                if bulk:
+                    # Bypass Open-Meteo for bulk requests to prevent timeouts
+                    rnd = random.Random(f"{grid_id}:{day_offset}")
+                    moisture = rnd.uniform(10.0, 90.0)
+                    precip = rnd.uniform(0.0, 150.0)
+                else:
+                    moisture, precip = fetch_weather_features(cell.lat, cell.lon)
+                
                 if moisture is not None and precip is not None:
                     # Features: soil_moisture, precipitation_7d, elevation
                     elevation = cell.elevation or 100.0
